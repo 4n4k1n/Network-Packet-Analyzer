@@ -1,253 +1,179 @@
-# Network Packet Analyzer Roadmap
+# Network Packet Analyzer - Practical Roadmap
 
-A comprehensive guide for building a high-performance network packet analyzer in Go.
+A step-by-step guide for building a working network packet analyzer in Go, starting from the current basic setup.
 
-## Overview
+## Current State
+- Basic Go project with "Hello World" main.go
+- Empty Makefile and inc/ directory
+- No dependencies or modules configured
 
-This project aims to build a network packet analyzer capable of processing packets at gigabit speeds while providing real-time analysis, anomaly detection, and network topology mapping. The analyzer will showcase advanced Go programming techniques, systems programming knowledge, and performance optimization skills.
+## Phase 1: Project Setup & Basic Structure (Days 1-2)
 
-## Phase 1: Foundation & Basic Capture (Week 1-2)
-
-### Core Infrastructure
-- Set up basic Go project structure with proper modules
-- Implement raw socket capture using `golang.org/x/net/ipv4` and `golang.org/x/net/ipv6`
-- Create packet buffer management with memory pools to avoid GC pressure
-- Build basic Ethernet frame parsing (Layer 2)
-- Implement IP header parsing (IPv4/IPv6)
-- Create concurrent packet processing pipeline with worker goroutines
+### Immediate Tasks
+1. **Initialize Go module**: `go mod init network-packet-analyzer`
+2. **Create proper directory structure**:
+   ```
+   src/
+   ├── main.go           # Entry point
+   ├── capture/          # Packet capture logic
+   ├── parser/           # Protocol parsing
+   ├── utils/            # Helper functions
+   └── types/            # Data structures
+   ```
+3. **Setup Makefile** with basic build/clean targets
+4. **Add core dependencies**: `gopacket`, `pcap`
 
 ### Deliverables
-- Basic packet capture functionality
-- Memory pool implementation
-- Simple Ethernet and IP parsing
-- Concurrent processing pipeline
+- Working Go module with proper structure
+- Functional Makefile
+- Dependencies installed and importable
 
-**Performance Goal:** Handle 10,000 packets/second without drops
+## Phase 2: Basic Packet Capture (Days 3-5)
 
-## Phase 2: Protocol Stack Implementation (Week 3-4)
+### Core Functionality
+1. **Network interface discovery** - List available interfaces
+2. **Basic packet capture** using gopacket/pcap
+3. **Simple packet counting** and basic statistics
+4. **Clean shutdown** with signal handling
 
-### Layer 3/4 Protocols
-- TCP segment parsing and connection tracking
-- UDP packet parsing
-- ICMP message handling
-- Fragment reassembly for IP packets
-- Basic protocol statistics collection
+### Implementation Focus
+- Use `github.com/google/gopacket/pcap` for capture
+- Handle permissions (requires root/sudo)
+- Basic error handling and logging
+- Simple CLI interface
+
+### Deliverables
+- Program can capture packets from network interface
+- Display packet count and basic stats
+- Graceful shutdown on Ctrl+C
+
+## Phase 3: Basic Protocol Parsing (Days 6-10)
+
+### Layer by Layer
+1. **Ethernet frame parsing** - MAC addresses, frame type
+2. **IP header parsing** - Source/dest IPs, protocol type
+3. **TCP/UDP basic parsing** - Ports, flags, payload size
+4. **Display formatted output** - Human-readable packet info
 
 ### Data Structures
-- Connection state tables using sync.Map for concurrent access
-- Circular buffers for packet history
-- Custom hash tables for fast protocol lookups
+- Define packet structure types
+- Create protocol statistics counters
+- Simple connection tracking (IP:port pairs)
 
 ### Deliverables
-- Complete TCP/UDP/ICMP parsing
-- Connection tracking system
-- Protocol statistics engine
-- Fragment reassembly mechanism
+- Parse and display Ethernet, IP, TCP, UDP headers
+- Show source/destination addresses and ports
+- Basic protocol distribution statistics
 
-**Performance Goal:** Process 100,000+ packets/second
+## Phase 4: Enhanced Analysis (Days 11-15)
 
-## Phase 3: Advanced Protocol Analysis (Week 5-6)
+### Features to Add
+1. **Protocol filtering** - Only show specific protocols
+2. **IP/port filtering** - Focus on specific addresses
+3. **Connection tracking** - Track TCP connections
+4. **Save to file** - Basic PCAP file writing
+5. **Configuration file** - YAML/JSON config
 
-### Application Layer Protocols
-- HTTP/HTTPS detection and basic parsing
-- DNS query/response analysis
-- SMTP, FTP, SSH protocol detection
-- Custom protocol fingerprinting
-
-### Network Topology Mapping
-- MAC address to IP mapping
-- Network device discovery
-- Route tracing and hop detection
-- Bandwidth usage per connection/protocol
+### Improvements
+- Better CLI argument parsing
+- Configurable output formats
+- Basic performance metrics
+- Memory usage optimization
 
 ### Deliverables
-- Application layer protocol detection
-- Network topology mapper
-- Bandwidth monitoring
-- Device discovery system
-
-## Phase 4: High-Performance Optimization (Week 7-8)
-
-### Zero-Copy Operations
-- Implement memory-mapped file I/O for packet storage
-- Use unsafe pointers for direct packet parsing (carefully!)
-- Custom memory allocators to reduce GC pressure
-- Lock-free data structures where possible
-
-### Concurrency Optimization
-- Implement NUMA-aware goroutine scheduling
-- Use channels with proper buffering strategies
-- Worker pool optimization with CPU affinity
-- Batch processing for better cache locality
-
-### Deliverables
-- Zero-copy packet processing
-- Custom memory allocators
-- Optimized goroutine scheduling
-- Lock-free data structures
-
-**Performance Goal:** Achieve gigabit speed processing (1M+ packets/second)
-
-## Phase 5: Real-time Analysis Engine (Week 9-10)
-
-### Anomaly Detection
-- Statistical baselines for normal traffic patterns
-- Port scanning detection algorithms
-- DDoS attack pattern recognition
-- Unusual traffic flow detection
-
-### Performance Monitoring
-- Real-time bandwidth utilization
-- Protocol distribution analysis
-- Connection duration tracking
-- Packet loss detection and measurement
-
-### Deliverables
-- Anomaly detection engine
-- Real-time monitoring system
-- Statistical analysis tools
-- Alert generation system
-
-## Phase 6: Storage & Retrieval System (Week 11-12)
-
-### Efficient Storage
-- Custom binary format for packet metadata
-- Time-series compression for metrics
-- Indexing system for fast queries
-- Retention policies and data aging
-
-### Query Engine
-- Time-range queries
-- Protocol-specific filtering
-- IP/port range searches
-- Statistical aggregations
-
-### Deliverables
-- Custom storage format
-- Query engine
-- Indexing system
-- Data retention policies
-
-## Phase 7: Advanced Features (Week 13-14)
-
-### Deep Packet Inspection
-- Payload pattern matching
-- Custom rule engine
-- Signature-based detection
-- Protocol violation detection
-
-### Network Security Features
-- Intrusion detection patterns
-- Malware communication detection
-- Data exfiltration monitoring
-- Suspicious connection analysis
-
-### Deliverables
-- Deep packet inspection engine
-- Rule engine
-- Security detection algorithms
-- Pattern matching system
-
-## Phase 8: Visualization & Interface (Week 15-16)
-
-### Real-time Dashboard
-- Web interface using Go's net/http
-- WebSocket for real-time updates
-- Interactive network topology graphs
-- Performance metrics visualization
-
-### CLI Tools
-- Command-line query interface
-- Export capabilities (CSV, JSON, PCAP)
+- Filtering capabilities
+- Connection state tracking
+- File output support
 - Configuration management
-- Real-time monitoring commands
+
+## Phase 5: Advanced Features (Days 16-25)
+
+### Choose Your Focus Area
+Pick 1-2 areas based on your interests:
+
+**Option A: Security Analysis**
+- Port scan detection
+- Suspicious traffic patterns
+- Basic intrusion detection rules
+
+**Option B: Performance Monitoring**
+- Bandwidth calculation per connection
+- Traffic pattern analysis
+- Network topology mapping
+
+**Option C: Application Layer**
+- HTTP request/response parsing
+- DNS query analysis
+- Common protocol detection
 
 ### Deliverables
-- Web dashboard
-- CLI interface
-- Export tools
-- Configuration system
+- One fully implemented advanced feature set
+- Comprehensive testing
+- Documentation
 
-## Technical Challenges
+## Required Dependencies
 
-### Performance Bottlenecks
-- Packet capture at wire speed without kernel drops
-- Memory allocation patterns that minimize GC impact
-- Concurrent data structure access optimization
-- CPU cache-friendly data layouts
-
-### Concurrency Issues
-- Lock-free packet processing pipelines
-- Efficient work distribution among goroutines
-- Memory synchronization between capture and analysis threads
-- Backpressure handling when analysis can't keep up
-
-### System Integration
-- Raw socket permissions and capabilities
-- Network interface management
-- Cross-platform compatibility
-- Resource limit handling
-
-## Dependencies & Libraries
-
-### Core Libraries
-- `gopacket` - Advanced packet parsing and manipulation
-- `golang.org/x/net` - Extended networking libraries
-- `golang.org/x/sys` - System-level optimizations
-- `github.com/google/gopacket/pcap` - Packet capture interface
-
-### Optional Enhancements
-- Custom C bindings for libpcap (ultimate performance)
-- DPDK bindings for kernel bypass
-- eBPF integration for in-kernel filtering
-
-## Benchmarking Strategy
-
-### Performance Testing
-- Continuous performance testing with different packet sizes
-- Memory usage profiling at each phase
-- Comparison against industry tools (Wireshark, tcpdump)
-- Load testing with synthetic traffic generators
-
-### Metrics to Track
-- Packets processed per second
-- Memory usage and GC pressure
-- CPU utilization per core
-- Network utilization vs processing capacity
-- Latency from capture to analysis
-
-### Testing Tools
-- `pktgen` for synthetic traffic generation
-- Go's built-in benchmarking and profiling tools
-- Custom performance measurement framework
-- Stress testing with real network traffic
-
-## Deployment Considerations
+### Essential Libraries
+```go
+github.com/google/gopacket v1.1.19
+github.com/google/gopacket/pcap v1.1.19
+gopkg.in/yaml.v2 v2.4.0  // For config files
+```
 
 ### System Requirements
-- Linux kernel 3.0+ (for optimal raw socket performance)
-- Root privileges or appropriate capabilities
-- Multi-core CPU recommended
-- Sufficient RAM for packet buffering
+- Linux/macOS (Windows has limitations)
+- libpcap-dev installed
+- Root privileges for packet capture
+- Go 1.19+
 
-### Configuration Options
-- Configurable buffer sizes
-- Tunable worker pool sizes
-- Adjustable analysis depth
-- Flexible output formats
+## Realistic Deliverables Timeline
 
-## Success Metrics
+### Week 1: Foundation
+- Working packet capture
+- Basic protocol parsing
+- Simple CLI interface
 
-### Technical Achievements
-- Process 1M+ packets/second on commodity hardware
-- Memory usage under 1GB for typical workloads
-- Sub-millisecond latency from capture to analysis
-- 99.9% packet capture accuracy
+### Week 2: Core Features
+- Protocol filtering
+- Connection tracking
+- File I/O support
 
-### Code Quality
-- Comprehensive test coverage (>90%)
-- Proper error handling and logging
-- Clean, maintainable architecture
-- Extensive documentation
+### Week 3-4: Polish & Extension
+- Choose one advanced feature
+- Testing and documentation
+- Performance optimization
 
-This roadmap provides a structured approach to building a production-quality network packet analyzer that will demonstrate advanced systems programming skills and serve as an impressive portfolio project.
+## Success Criteria
+
+### Minimum Viable Product
+- Capture packets from network interface
+- Parse Ethernet, IP, TCP, UDP headers
+- Display human-readable output
+- Basic filtering capabilities
+- Save captured data
+
+### Stretch Goals (if time permits)
+- One advanced analysis feature
+- Web interface for real-time monitoring
+- Performance benchmarking
+- Cross-platform support
+
+## Getting Started Commands
+
+```bash
+# Initialize the project
+cd Network-Packet-Analyzer
+go mod init network-packet-analyzer
+
+# Install required system dependencies (Ubuntu/Debian)
+sudo apt-get install libpcap-dev
+
+# Add Go dependencies
+go get github.com/google/gopacket
+go get github.com/google/gopacket/pcap
+
+# Test packet capture (requires root)
+sudo go run src/main.go
+```
+
+This roadmap is designed to build a functional packet analyzer progressively, with each phase producing working software. Focus on completing each phase fully before moving to the next.
