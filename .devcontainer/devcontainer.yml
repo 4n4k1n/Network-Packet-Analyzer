@@ -1,0 +1,15 @@
+name: "Network Packet Analyzer"
+dockerFile: "../Dockerfile"
+
+runArgs:
+  - "--cap-add=NET_ADMIN"
+  - "--network=host"
+
+customizations:
+  vscode:
+    extensions:
+      - golang.go
+
+forwardPorts: [8080]
+
+workspaceFolder: "/workspace"
