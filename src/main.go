@@ -14,7 +14,7 @@ func main() {
 	var snaplen int32 = 1024
 	var promisc bool = true
 	var err error
-	var timeout time.Duration = time.Microsecond * 100
+	var timeout time.Duration = time.Microsecond * 10
 	var handle *pcap.Handle
 	var count int32 = 0
 	startTime := time.Now()
