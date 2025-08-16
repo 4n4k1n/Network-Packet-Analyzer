@@ -17,6 +17,8 @@ func main() {
 	var timeout time.Duration = time.Second * 30
 	var handle *pcap.Handle
 	var count int32 = 0
+	startTime := time.Now()
+
 	handle, err = pcap.OpenLive(device, snaplen, promisc, timeout)
 	if err != nil {
 		log.Fatal(err)
@@ -27,6 +29,9 @@ func main() {
 	for pack := range pack_src.Packets() {
 		count++
 		fmt.Println(pack)
+		if time.Since(startTime) > 30*time.Second {
+			break
+		}
 	}
 
 	fmt.Printf("Network interface: %s\nPackets captured: %d\n", device, count)
