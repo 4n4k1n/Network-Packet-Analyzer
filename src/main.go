@@ -1,23 +1,33 @@
 package main
 
 import (
-	"io"
+	"fmt"
 	"log"
-	"net/http"
+	"time"
+
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/pcap"
 )
 
 func main() {
-
-	resp, err := http.Get("http://42logtime.com")
+	var device string = "wlan0"
+	var snaplen int32 = 1024
+	var promisc bool = false
+	var err error
+	var timeout time.Duration = time.Second * 30
+	var handle *pcap.Handle
+	var count int32 = 0
+	handle, err = pcap.OpenLive(device, snaplen, promisc, timeout)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
+	}
+	defer handle.Close()
+
+	pack_src := gopacket.NewPacketSource(handle, handle.LinkType())
+	for pack := range pack_src.Packets() {
+		count++
+		fmt.Println(pack)
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	sb := string(body)
-	log.Printf("%s", sb)
+	fmt.Printf("Network interface: %s\nPackets captured: %d\n", device, count)
 }
