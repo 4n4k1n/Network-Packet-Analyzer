@@ -12,9 +12,9 @@ import (
 func main() {
 	var device string = "wlan0"
 	var snaplen int32 = 1024
-	var promisc bool = false
+	var promisc bool = true
 	var err error
-	var timeout time.Duration = time.Second * 30
+	var timeout time.Duration = time.Microsecond * 100
 	var handle *pcap.Handle
 	var count int32 = 0
 	startTime := time.Now()
