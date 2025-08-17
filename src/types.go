@@ -31,4 +31,6 @@ type Stats_data struct {
 	udp_packets       int
 	most_active_src   string
 	most_active_dst   string
+	src_ip_counts     map[string]int
+	dst_ip_counts     map[string]int
 }

@@ -21,7 +21,7 @@ func printStats(stats_data Stats_data) {
 }
 
 func printHeaderLine() {
-	fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s\n", "src IP", "test IP", "protocol", "src port", "dest port")
+	fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s\n", "src IP", "dest IP", "protocol", "src port", "dest port")
 }
 
 func printPacketData(data Data) {
