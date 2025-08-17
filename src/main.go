@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"time"
@@ -65,7 +66,11 @@ func main() {
 	startTime := time.Now()
 	var data Data
 
-	handle, err = pcap.OpenLive("wlan0", 1024, true, time.Microsecond*10)
+	duration := flag.Int("time", 30, "Duration of the program in seconds!")
+	device := flag.String("device", "wlan0", "Get the device name!")
+	flag.Parse()
+
+	handle, err = pcap.OpenLive(*device, 1024, true, time.Microsecond*10)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,7 +82,7 @@ func main() {
 		data = getData(pack)
 		fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port)
 		// fmt.Printf("srcIP: %s, DstIP: %s, Prot: %s\n", data.src_ip, data.dst_ip, data.protocol)
-		if time.Since(startTime) > 30*time.Second {
+		if time.Since(startTime) > time.Duration(*duration)*time.Second {
 			break
 		}
 	}
