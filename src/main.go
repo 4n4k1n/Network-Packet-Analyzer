@@ -11,6 +11,14 @@ import (
 	"github.com/google/gopacket/pcap"
 )
 
+type Parse_data struct {
+	device   *string
+	duration *int
+	protocol string
+	port     string
+	ip       string
+}
+
 type Data struct {
 	src_ip   string
 	dst_ip   string
@@ -52,10 +60,18 @@ func getData(pack gopacket.Packet) Data {
 	data.src_ip = ipv4.SrcIP.String()
 	data.dst_ip = ipv4.DstIP.String()
 	data.protocol = ipv4.Protocol
-
 	getLayerPortData(pack, &data)
 
 	return data
+}
+
+func parse() Parse_data {
+	var parse_data Parse_data
+
+	parse_data.duration = flag.Int("time", 30, "Duration of the program in seconds!")
+	parse_data.device = flag.String("device", "wlan0", "Get the device name!")
+	flag.Parse()
+	return parse_data
 }
 
 func main() {
@@ -65,11 +81,9 @@ func main() {
 	startTime := time.Now()
 	var data Data
 
-	duration := flag.Int("time", 30, "Duration of the program in seconds!")
-	device := flag.String("device", "wlan0", "Get the device name!")
-	flag.Parse()
+	parse_data := parse()
 
-	handle, err = pcap.OpenLive(*device, 1024, true, time.Microsecond*10)
+	handle, err = pcap.OpenLive(*parse_data.device, 1024, true, time.Microsecond*10)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -81,7 +95,7 @@ func main() {
 		data = getData(pack)
 		fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port)
 		// fmt.Printf("srcIP: %s, DstIP: %s, Prot: %s\n", data.src_ip, data.dst_ip, data.protocol)
-		if time.Since(startTime) > time.Duration(*duration)*time.Second {
+		if time.Since(startTime) > time.Duration(*parse_data.duration)*time.Second {
 			break
 		}
 	}
