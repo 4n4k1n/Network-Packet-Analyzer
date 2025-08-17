@@ -117,6 +117,8 @@ func main() {
 
 	filterInput(parse_data, handle)
 
+	fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s\n", "src IP", "test IP", "protocol", "src port", "dest port")
+
 	pack_src := gopacket.NewPacketSource(handle, handle.LinkType())
 	for pack := range pack_src.Packets() {
 		count++
