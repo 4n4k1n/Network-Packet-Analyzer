@@ -13,7 +13,9 @@ func main() {
 	var handle *pcap.Handle
 	startTime := time.Now()
 	var data Data
-	var stats_data Stats_data
+	var stats_data Stats_data = Stats_data{
+		src_ip_counts: make(map[string]int),
+		dst_ip_counts: make(map[string]int)}
 
 	parse_data := parse()
 
@@ -32,6 +34,8 @@ func main() {
 		stats_data.total_packets++
 		data = getData(pack)
 		printPacketData(data)
+		stats_data.src_ip_counts[data.src_ip]++
+		stats_data.dst_ip_counts[data.dst_ip]++
 		if time.Since(startTime) > time.Duration(*parse_data.duration)*time.Second {
 			break
 		}
