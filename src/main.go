@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/google/gopacket"
@@ -71,11 +72,32 @@ func parse() Parse_data {
 
 	parse_data.duration = flag.Int("time", 30, "Duration of the program in seconds!")
 	parse_data.device = flag.String("device", "wlan0", "Get the device name!")
-	parse_data.filter_items[0] = *flag.String("ip", "", "ip")
-	parse_data.filter_items[1] = *flag.String("protocol", "", "protocol")
-	parse_data.filter_items[2] = *flag.String("port", "", "port")
+
+	ip := flag.String("ip", "", "ip")
+	protocol := flag.String("protocol", "", "protocol")
+	port := flag.String("port", "", "port")
 	flag.Parse()
+
+	if *ip != "" {
+		parse_data.filter_items = append(parse_data.filter_items, "host "+*ip)
+	}
+	if *protocol != "" {
+		parse_data.filter_items = append(parse_data.filter_items, *protocol)
+	}
+	if *port != "" {
+		parse_data.filter_items = append(parse_data.filter_items, "port "+*port)
+	}
+
 	return parse_data
+}
+
+func filterInput(parse_data Parse_data, handle *pcap.Handle) {
+
+	filter_str := strings.Join(parse_data.filter_items, " and ")
+
+	if filter_str != "" {
+		handle.SetBPFFilter(filter_str)
+	}
 }
 
 func main() {
@@ -93,7 +115,7 @@ func main() {
 	}
 	defer handle.Close()
 
-	// handle.SetBPFFilter()
+	filterInput(parse_data, handle)
 
 	pack_src := gopacket.NewPacketSource(handle, handle.LinkType())
 	for pack := range pack_src.Packets() {
