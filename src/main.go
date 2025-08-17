@@ -1,10 +1,7 @@
 package main
 
 import (
-	"flag"
-	"fmt"
 	"log"
-	"strings"
 	"time"
 
 	"github.com/google/gopacket"
@@ -12,100 +9,14 @@ import (
 	"github.com/google/gopacket/pcap"
 )
 
-type Parse_data struct {
-	device   *string
-	duration *int
-	// protocol *string
-	// port     *string
-	// ip       *string
-	filter_items []string
-}
-
-type Data struct {
-	src_ip   string
-	dst_ip   string
-	protocol layers.IPProtocol
-	tcp      *layers.TCP
-	udp      *layers.UDP
-	src_port uint16
-	dst_port uint16
-}
-
-func getLayerPortData(pack gopacket.Packet, data *Data) {
-
-	switch data.protocol {
-	case layers.IPProtocolTCP:
-		tcp_layer := pack.Layer(layers.LayerTypeTCP)
-		data.tcp = tcp_layer.(*layers.TCP)
-		data.src_port = uint16(data.tcp.SrcPort)
-		data.dst_port = uint16(data.tcp.DstPort)
-	case layers.IPProtocolUDP:
-		udp_layer := pack.Layer(layers.LayerTypeUDP)
-		data.udp = udp_layer.(*layers.UDP)
-		data.src_port = uint16(data.udp.SrcPort)
-		data.dst_port = uint16(data.udp.DstPort)
-	}
-}
-
-func getData(pack gopacket.Packet) Data {
-	var data Data
-
-	ip_layer := pack.Layer(layers.LayerTypeIPv4)
-	if ip_layer == nil {
-		data.src_ip = "N/A"
-		data.dst_ip = "N/A"
-		data.protocol = 0
-		return data
-	}
-
-	ipv4 := ip_layer.(*layers.IPv4)
-	data.src_ip = ipv4.SrcIP.String()
-	data.dst_ip = ipv4.DstIP.String()
-	data.protocol = ipv4.Protocol
-	getLayerPortData(pack, &data)
-
-	return data
-}
-
-func parse() Parse_data {
-	var parse_data Parse_data
-
-	parse_data.duration = flag.Int("time", 30, "Duration of the program in seconds!")
-	parse_data.device = flag.String("device", "wlan0", "Get the device name!")
-
-	ip := flag.String("ip", "", "ip")
-	protocol := flag.String("protocol", "", "protocol")
-	port := flag.String("port", "", "port")
-	flag.Parse()
-
-	if *ip != "" {
-		parse_data.filter_items = append(parse_data.filter_items, "host "+*ip)
-	}
-	if *protocol != "" {
-		parse_data.filter_items = append(parse_data.filter_items, *protocol)
-	}
-	if *port != "" {
-		parse_data.filter_items = append(parse_data.filter_items, "port "+*port)
-	}
-
-	return parse_data
-}
-
-func filterInput(parse_data Parse_data, handle *pcap.Handle) {
-
-	filter_str := strings.Join(parse_data.filter_items, " and ")
-
-	if filter_str != "" {
-		handle.SetBPFFilter(filter_str)
-	}
-}
-
 func main() {
 	var err error
 	var handle *pcap.Handle
-	var count int32 = 0
 	startTime := time.Now()
 	var data Data
+	var stats_data Stats_data = Stats_data{
+		src_ip_counts: make(map[string]int),
+		dst_ip_counts: make(map[string]int)}
 
 	parse_data := parse()
 
@@ -117,18 +28,27 @@ func main() {
 
 	filterInput(parse_data, handle)
 
-	fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s\n", "src IP", "test IP", "protocol", "src port", "dest port")
+	printHeaderLine()
 
 	pack_src := gopacket.NewPacketSource(handle, handle.LinkType())
 	for pack := range pack_src.Packets() {
-		count++
+		stats_data.total_packets++
 		data = getData(pack)
-		fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port)
-		// fmt.Printf("srcIP: %s, DstIP: %s, Prot: %s\n", data.src_ip, data.dst_ip, data.protocol)
+		printPacketData(data)
+		if data.protocol == layers.IPProtocolTCP {
+			stats_data.tcp_packets++
+		} else if data.protocol == layers.IPProtocolUDP {
+			stats_data.udp_packets++
+		} else {
+			stats_data.other_packets++
+		}
+		stats_data.src_ip_counts[data.src_ip]++
+		stats_data.dst_ip_counts[data.dst_ip]++
 		if time.Since(startTime) > time.Duration(*parse_data.duration)*time.Second {
 			break
 		}
 	}
-
-	// fmt.Printf("Network interface: %s\nPackets captured: %d\n", device, count)
+	stats_data.captured_duration = *parse_data.duration
+	stats_data.average_rate = float32(stats_data.total_packets) / float32(stats_data.captured_duration)
+	printStats(stats_data)
 }
