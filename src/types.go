@@ -29,6 +29,7 @@ type Stats_data struct {
 	unique_dst_ids    int
 	tcp_packets       int
 	udp_packets       int
+	other_packets     int
 	most_active_src   string
 	most_active_dst   string
 	src_ip_counts     map[string]int

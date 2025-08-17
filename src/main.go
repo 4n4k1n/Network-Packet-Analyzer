@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
 )
 
@@ -34,6 +35,13 @@ func main() {
 		stats_data.total_packets++
 		data = getData(pack)
 		printPacketData(data)
+		if data.protocol == layers.IPProtocolTCP {
+			stats_data.tcp_packets++
+		} else if data.protocol == layers.IPProtocolUDP {
+			stats_data.udp_packets++
+		} else {
+			stats_data.other_packets++
+		}
 		stats_data.src_ip_counts[data.src_ip]++
 		stats_data.dst_ip_counts[data.dst_ip]++
 		if time.Since(startTime) > time.Duration(*parse_data.duration)*time.Second {
