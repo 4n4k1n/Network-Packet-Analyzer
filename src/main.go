@@ -1,23 +1,86 @@
 package main
 
 import (
-	"io"
+	"fmt"
 	"log"
-	"net/http"
+	"time"
+
+	"github.com/google/gopacket"
+	"github.com/google/gopacket/layers"
+	"github.com/google/gopacket/pcap"
 )
 
+type Data struct {
+	ipv4     layers.IPv4
+	src_ip   string
+	dst_ip   string
+	protocol layers.IPProtocol
+	tcp      *layers.TCP
+	udp      *layers.UDP
+	src_port uint16
+	dst_port uint16
+}
+
+func getLayerPortData(pack gopacket.Packet, data *Data) {
+
+	switch data.protocol {
+	case layers.IPProtocolTCP:
+		tcp_layer := pack.Layer(layers.LayerTypeTCP)
+		data.tcp = tcp_layer.(*layers.TCP)
+		data.src_port = uint16(data.tcp.SrcPort)
+		data.dst_port = uint16(data.tcp.DstPort)
+	case layers.IPProtocolUDP:
+		udp_layer := pack.Layer(layers.LayerTypeUDP)
+		data.udp = udp_layer.(*layers.UDP)
+		data.src_port = uint16(data.udp.SrcPort)
+		data.dst_port = uint16(data.udp.DstPort)
+	}
+}
+
+func getData(pack gopacket.Packet) Data {
+	var data Data
+
+	ip_layer := pack.Layer(layers.LayerTypeIPv4)
+	if ip_layer == nil {
+		data.src_ip = "N/A"
+		data.dst_ip = "N/A"
+		data.protocol = 0
+		return data
+	}
+
+	ipv4 := ip_layer.(*layers.IPv4)
+	data.src_ip = ipv4.SrcIP.String()
+	data.dst_ip = ipv4.DstIP.String()
+	data.protocol = ipv4.Protocol
+
+	getLayerPortData(pack, &data)
+
+	return data
+}
+
 func main() {
+	var err error
+	var handle *pcap.Handle
+	var count int32 = 0
+	startTime := time.Now()
+	var data Data
 
-	resp, err := http.Get("http://42logtime.com")
+	handle, err = pcap.OpenLive("wlan0", 1024, true, time.Microsecond*10)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
+	}
+	defer handle.Close()
+
+	pack_src := gopacket.NewPacketSource(handle, handle.LinkType())
+	for pack := range pack_src.Packets() {
+		count++
+		data = getData(pack)
+		fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port)
+		// fmt.Printf("srcIP: %s, DstIP: %s, Prot: %s\n", data.src_ip, data.dst_ip, data.protocol)
+		if time.Since(startTime) > 30*time.Second {
+			break
+		}
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	sb := string(body)
-	log.Printf("%s", sb)
+	// fmt.Printf("Network interface: %s\nPackets captured: %d\n", device, count)
 }

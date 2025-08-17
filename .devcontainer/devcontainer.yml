@@ -1,5 +1,5 @@
 name: "Network Packet Analyzer"
-dockerFile: "../Dockerfile"
+dockerFile: "Dockerfile"
 
 runArgs:
   - "--cap-add=NET_ADMIN"
