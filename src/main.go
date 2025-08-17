@@ -12,7 +12,6 @@ import (
 )
 
 type Data struct {
-	ipv4     layers.IPv4
 	src_ip   string
 	dst_ip   string
 	protocol layers.IPProtocol
