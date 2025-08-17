@@ -14,9 +14,10 @@ import (
 type Parse_data struct {
 	device   *string
 	duration *int
-	protocol string
-	port     string
-	ip       string
+	// protocol *string
+	// port     *string
+	// ip       *string
+	filter_items []string
 }
 
 type Data struct {
@@ -70,6 +71,9 @@ func parse() Parse_data {
 
 	parse_data.duration = flag.Int("time", 30, "Duration of the program in seconds!")
 	parse_data.device = flag.String("device", "wlan0", "Get the device name!")
+	parse_data.filter_items[0] = *flag.String("ip", "", "ip")
+	parse_data.filter_items[1] = *flag.String("protocol", "", "protocol")
+	parse_data.filter_items[2] = *flag.String("port", "", "port")
 	flag.Parse()
 	return parse_data
 }
@@ -88,6 +92,8 @@ func main() {
 		log.Fatal(err)
 	}
 	defer handle.Close()
+
+	// handle.SetBPFFilter()
 
 	pack_src := gopacket.NewPacketSource(handle, handle.LinkType())
 	for pack := range pack_src.Packets() {
