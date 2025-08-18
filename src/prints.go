@@ -6,6 +6,7 @@ import (
 	"github.com/dariubs/percent"
 )
 
+// function to print the stats at the end of the program
 func printStats(stats_data Stats_data) {
 	var key string
 
@@ -25,10 +26,12 @@ func printStats(stats_data Stats_data) {
 	fmt.Printf("Most active destination : %s (%d packets)\n\n", key, stats_data.dst_ip_counts[key])
 }
 
+// print the header line
 func printHeaderLine() {
 	fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s\n", "src IP", "dest IP", "protocol", "src port", "dest port")
 }
 
+// print the packet data
 func printPacketData(data Data) {
 	fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port)
 }

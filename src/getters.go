@@ -5,6 +5,7 @@ import (
 	"github.com/google/gopacket/layers"
 )
 
+// get protocol (TCP/UDP) and get the in/out port
 func getLayerPortData(pack gopacket.Packet, data *Data) {
 
 	switch data.protocol {
@@ -21,6 +22,7 @@ func getLayerPortData(pack gopacket.Packet, data *Data) {
 	}
 }
 
+// get the data of the packet (IPv4 layer, ports, protocol, IPs)
 func getData(pack gopacket.Packet) Data {
 	var data Data
 

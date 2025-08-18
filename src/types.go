@@ -2,6 +2,7 @@ package main
 
 import "github.com/google/gopacket/layers"
 
+// struct for the pasing data
 type Parse_data struct {
 	device   *string
 	duration *int
@@ -11,6 +12,7 @@ type Parse_data struct {
 	filter_items []string
 }
 
+// general data struct
 type Data struct {
 	src_ip   string
 	dst_ip   string
@@ -21,17 +23,14 @@ type Data struct {
 	dst_port uint16
 }
 
+// struct for the stats data
 type Stats_data struct {
 	total_packets     int
 	captured_duration int
 	average_rate      float32
-	unique_src_ids    int
-	unique_dst_ids    int
 	tcp_packets       int
 	udp_packets       int
 	other_packets     int
-	most_active_src   string
-	most_active_dst   string
 	src_ip_counts     map[string]int
 	dst_ip_counts     map[string]int
 }

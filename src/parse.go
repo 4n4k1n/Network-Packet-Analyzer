@@ -7,6 +7,7 @@ import (
 	"github.com/google/gopacket/pcap"
 )
 
+// pase the analyzer args using the flag libary
 func parse() Parse_data {
 	var parse_data Parse_data
 
@@ -31,6 +32,7 @@ func parse() Parse_data {
 	return parse_data
 }
 
+// join the args and filter the packets using BPF
 func filterInput(parse_data Parse_data, handle *pcap.Handle) {
 
 	filter_str := strings.Join(parse_data.filter_items, " and ")
