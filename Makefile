@@ -9,5 +9,11 @@ update-mods:
 
 deps:
 	go mod download github.com/google/gopacket
+	go mod download github.com/dariubs/percent
 
-.PHONY: all deps
+clean:
+	rm -f analyzer
+	go clean
+	go mod tidy
+
+.PHONY: all deps clean
