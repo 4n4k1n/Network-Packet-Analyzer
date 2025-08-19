@@ -30,10 +30,12 @@ func main() {
 
 	printHeaderLine()
 
+	stats_data.traffic_size = 0
 	pack_src := gopacket.NewPacketSource(handle, handle.LinkType())
 	for pack := range pack_src.Packets() {
 		stats_data.total_packets++
 		data = getData(pack)
+		stats_data.traffic_size += ByteSize(pack.Metadata().Length)
 		printPacketData(data)
 		switch data.protocol {
 		case layers.IPProtocolTCP:

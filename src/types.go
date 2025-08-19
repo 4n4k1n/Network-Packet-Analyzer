@@ -2,6 +2,15 @@ package main
 
 import "github.com/google/gopacket/layers"
 
+type ByteSize int
+
+const (
+	B  ByteSize = 1 << (10 * iota) // 1 << 0 = 1
+	KB ByteSize = 1 << (10 * iota) // 1 << 10 = 1024
+	MB ByteSize = 1 << (10 * iota) // 1 << 20 = 1048576
+	GB ByteSize = 1 << (10 * iota) // 1 << 30 = 1073741824
+)
+
 // struct for the pasing data
 type Parse_data struct {
 	device   *string
@@ -33,4 +42,5 @@ type Stats_data struct {
 	other_packets     int
 	src_ip_counts     map[string]int
 	dst_ip_counts     map[string]int
+	traffic_size      ByteSize
 }

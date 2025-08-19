@@ -6,6 +6,19 @@ import (
 	"github.com/dariubs/percent"
 )
 
+func prinTrafficSize(stats Stats_data) {
+
+	if stats.traffic_size > GB {
+		fmt.Printf("Traffic size            : %d GB\n\n", stats.traffic_size/GB)
+	} else if stats.traffic_size > MB {
+		fmt.Printf("Traffic size            : %d MB\n\n", stats.traffic_size/MB)
+	} else if stats.traffic_size > KB {
+		fmt.Printf("Traffic size            : %d KB\n\n", stats.traffic_size/KB)
+	} else {
+		fmt.Printf("Traffic size            : %d B\n\n", stats.traffic_size)
+	}
+}
+
 // function to print the stats at the end of the program
 func printStats(stats_data Stats_data) {
 	var key string
@@ -23,7 +36,8 @@ func printStats(stats_data Stats_data) {
 	key = getMaxOfMap(stats_data.src_ip_counts)
 	fmt.Printf("Most active source      : %s (%d packets)\n", key, stats_data.src_ip_counts[key])
 	key = getMaxOfMap(stats_data.dst_ip_counts)
-	fmt.Printf("Most active destination : %s (%d packets)\n\n", key, stats_data.dst_ip_counts[key])
+	fmt.Printf("Most active destination : %s (%d packets)\n", key, stats_data.dst_ip_counts[key])
+	prinTrafficSize(stats_data)
 }
 
 // print the header line
