@@ -22,7 +22,7 @@ type Parse_data struct {
 }
 
 // general data struct
-type Data struct {
+type Pack_data struct {
 	src_ip   string
 	dst_ip   string
 	protocol layers.IPProtocol

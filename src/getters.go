@@ -6,7 +6,7 @@ import (
 )
 
 // get protocol (TCP/UDP) and get the in/out port
-func getLayerPortData(pack gopacket.Packet, data *Data) {
+func getLayerPortData(pack gopacket.Packet, data *Pack_data) {
 
 	switch data.protocol {
 	case layers.IPProtocolTCP:
@@ -23,8 +23,8 @@ func getLayerPortData(pack gopacket.Packet, data *Data) {
 }
 
 // get the data of the packet (IPv4 layer, ports, protocol, IPs)
-func getData(pack gopacket.Packet) Data {
-	var data Data
+func getData(pack gopacket.Packet) Pack_data {
+	var data Pack_data
 
 	ip_layer := pack.Layer(layers.LayerTypeIPv4)
 	if ip_layer == nil {

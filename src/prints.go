@@ -46,6 +46,6 @@ func printHeaderLine() {
 }
 
 // print the packet data
-func printPacketData(data Data) {
+func printPacketData(data Pack_data) {
 	fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port)
 }

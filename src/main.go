@@ -13,7 +13,7 @@ func main() {
 	var err error
 	var handle *pcap.Handle
 	startTime := time.Now()
-	var data Data
+	var data Pack_data
 	var stats_data Stats_data = Stats_data{
 		src_ip_counts: make(map[string]int),
 		dst_ip_counts: make(map[string]int)}
