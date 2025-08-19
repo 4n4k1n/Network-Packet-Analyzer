@@ -46,6 +46,7 @@ func main() {
 		stats_data.total_packets++
 		data = getData(pack)
 		stats_data.traffic_size += ByteSize(pack.Metadata().Length)
+		getServiceName(&data, &stats_data)
 		log := sprintPacketData(data, pack.Metadata().Length, &stats_data)
 		fmt.Printf("%s", log)
 		file.WriteString(log)
