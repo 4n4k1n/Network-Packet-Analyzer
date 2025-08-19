@@ -19,9 +19,12 @@ func main() {
 	var stats_data Stats_data = Stats_data{
 		src_ip_counts: make(map[string]int),
 		dst_ip_counts: make(map[string]int),
-		dns_cache:     make(map[string]string)}
+		dns_cache:     make(map[string]string),
+		service_cache: make(map[uint16]string)}
 
 	parse_data := parse()
+
+	loadPortMappings(&stats_data)
 
 	handle, err = pcap.OpenLive(*parse_data.device, 1024, true, time.Microsecond*10)
 	if err != nil {

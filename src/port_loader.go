@@ -45,9 +45,9 @@ func getPortName(port uint16, stats *Stats_data) string {
 func getServiceName(pack *Pack_data, stats *Stats_data) {
 
 	src_service := getPortName(pack.src_port, stats)
-	dst_service := getPortName(pack.src_port, stats)
+	dst_service := getPortName(pack.dst_port, stats)
 
-	if src_service != "Umknown" {
+	if src_service != "Unknown" {
 		pack.service = src_service
 	} else if dst_service != "Unknown" {
 		pack.service = dst_service
