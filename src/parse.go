@@ -13,6 +13,7 @@ func parse() Parse_data {
 
 	parse_data.duration = flag.Int("time", 30, "Duration of the program in seconds!")
 	parse_data.device = flag.String("device", "wlan0", "Get the device name!")
+	parse_data.verbose = flag.Bool("verbose", false, "Enable verbose output with hostname resolution")
 
 	ip := flag.String("ip", "", "ip")
 	protocol := flag.String("protocol", "", "protocol")

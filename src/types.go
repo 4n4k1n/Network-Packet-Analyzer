@@ -22,6 +22,7 @@ type KeyValue struct {
 type Parse_data struct {
 	device   *string
 	duration *int
+	verbose  *bool
 	// protocol *string
 	// port     *string
 	// ip       *string

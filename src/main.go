@@ -41,7 +41,7 @@ func main() {
 
 	filterInput(parse_data, handle)
 
-	printHeaderLine()
+	printHeaderLine(*parse_data.verbose)
 
 	stats_data.traffic_size = 0
 	pack_src := gopacket.NewPacketSource(handle, handle.LinkType())
@@ -50,7 +50,7 @@ func main() {
 		data = getData(pack)
 		stats_data.traffic_size += ByteSize(pack.Metadata().Length)
 		getServiceName(&data, &stats_data)
-		log := sprintPacketData(data, pack.Metadata().Length, &stats_data)
+		log := sprintPacketData(data, pack.Metadata().Length, &stats_data, *parse_data.verbose)
 		fmt.Printf("%s", log)
 		file.WriteString(log)
 		switch data.protocol {

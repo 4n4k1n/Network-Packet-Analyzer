@@ -48,12 +48,16 @@ func printStats(stats_data Stats_data) {
 }
 
 // print the header line
-func printHeaderLine() {
-	fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s  %-8s  %-15s\n\n", "src IP", "dst IP", "protocol", "src port", "dest port", "bytes", "service")
+func printHeaderLine(verbose bool) {
+	if verbose {
+		fmt.Printf("%-15s %-25s %-15s %-25s %-8s %-10s %-10s %-8s %-15s\n\n", "src IP", "src hostname", "dst IP", "dst hostname", "protocol", "src port", "dest port", "bytes", "service")
+	} else {
+		fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s  %-8s  %-15s\n\n", "src IP", "dst IP", "protocol", "src port", "dest port", "bytes", "service")
+	}
 }
 
 // print the packet data
-func sprintPacketData(data Pack_data, size int, _ *Stats_data) string {
+func sprintPacketData(data Pack_data, size int, stats *Stats_data, verbose bool) string {
 	// Format size with appropriate unit
 	var sizeStr string
 	if size > 1024 {
@@ -62,6 +66,13 @@ func sprintPacketData(data Pack_data, size int, _ *Stats_data) string {
 		sizeStr = fmt.Sprintf("%dB", size)
 	}
 
-	log := fmt.Sprintf("%-15s  %-15s  %-8s  %-10d  %-10d  %-8s  %-15s\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port, sizeStr, data.service)
-	return log
+	if verbose {
+		srcHost := reverseDNS(data.src_ip, stats)
+		dstHost := reverseDNS(data.dst_ip, stats)
+		log := fmt.Sprintf("%-15s %-25s %-15s %-25s %-8s %-10d %-10d %-8s %-15s\n", data.src_ip, srcHost, data.dst_ip, dstHost, data.protocol, data.src_port, data.dst_port, sizeStr, data.service)
+		return log
+	} else {
+		log := fmt.Sprintf("%-15s  %-15s  %-8s  %-10d  %-10d  %-8s  %-15s\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port, sizeStr, data.service)
+		return log
+	}
 }
