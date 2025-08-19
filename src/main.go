@@ -16,7 +16,8 @@ func main() {
 	var data Pack_data
 	var stats_data Stats_data = Stats_data{
 		src_ip_counts: make(map[string]int),
-		dst_ip_counts: make(map[string]int)}
+		dst_ip_counts: make(map[string]int),
+		dns_cache:     make(map[string]string)}
 
 	parse_data := parse()
 
@@ -36,7 +37,7 @@ func main() {
 		stats_data.total_packets++
 		data = getData(pack)
 		stats_data.traffic_size += ByteSize(pack.Metadata().Length)
-		printPacketData(data, pack.Metadata().Length)
+		printPacketData(data, pack.Metadata().Length, &stats_data)
 		switch data.protocol {
 		case layers.IPProtocolTCP:
 			stats_data.tcp_packets++
