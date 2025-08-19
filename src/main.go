@@ -36,7 +36,7 @@ func main() {
 		stats_data.total_packets++
 		data = getData(pack)
 		stats_data.traffic_size += ByteSize(pack.Metadata().Length)
-		printPacketData(data)
+		printPacketData(data, pack.Metadata().Length)
 		switch data.protocol {
 		case layers.IPProtocolTCP:
 			stats_data.tcp_packets++

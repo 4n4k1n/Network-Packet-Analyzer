@@ -2,7 +2,7 @@ package main
 
 import "github.com/google/gopacket/layers"
 
-type ByteSize int
+type ByteSize int64
 
 const (
 	B  ByteSize = 1 << (10 * iota) // 1 << 0 = 1

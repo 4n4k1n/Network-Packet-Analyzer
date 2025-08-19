@@ -42,10 +42,10 @@ func printStats(stats_data Stats_data) {
 
 // print the header line
 func printHeaderLine() {
-	fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s\n", "src IP", "dest IP", "protocol", "src port", "dest port")
+	fmt.Printf("%-15s  %-15s  %-8s  %-10s  %-10s  %-10s\n", "src IP", "dest IP", "protocol", "src port", "dest port", "bytes")
 }
 
 // print the packet data
-func printPacketData(data Pack_data) {
-	fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port)
+func printPacketData(data Pack_data, size int) {
+	fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d  %-10d\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port, size)
 }
