@@ -13,3 +13,26 @@ func getMaxOfMap(src map[string]int) string {
 	}
 	return index_value
 }
+
+// Get top N entries from a map
+func getTopNFromMap(src map[string]int, n int) []KeyValue {
+	var pairs []KeyValue
+	for k, v := range src {
+		pairs = append(pairs, KeyValue{k, v})
+	}
+	
+	// Simple bubble sort for top N (sufficient for small datasets)
+	for i := 0; i < len(pairs); i++ {
+		for j := i + 1; j < len(pairs); j++ {
+			if pairs[i].Value < pairs[j].Value {
+				pairs[i], pairs[j] = pairs[j], pairs[i]
+			}
+		}
+	}
+	
+	if len(pairs) < n {
+		n = len(pairs)
+	}
+	
+	return pairs[:n]
+}
