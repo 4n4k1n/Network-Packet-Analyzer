@@ -10,10 +10,9 @@ func reverseDNS(ip string, stats *Stats_data) string {
 
 	names, err := net.LookupAddr(ip)
 	if err != nil || len(names) == 0 {
-		stats.dns_cache[ip] = names[0]
+		stats.dns_cache[ip] = ip
 		return ip
 	}
-
 	stats.dns_cache[ip] = names[0]
 	return names[0]
 }
