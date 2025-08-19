@@ -13,6 +13,11 @@ const (
 	GB ByteSize = 1 << (10 * iota) // 1 << 30 = 1073741824
 )
 
+type KeyValue struct {
+	Key   string
+	Value int
+}
+
 // struct for the pasing data
 type Parse_data struct {
 	device   *string
