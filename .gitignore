@@ -2,3 +2,4 @@ analyzer
 go.sum
 .env
 MDs/*
+logs/*

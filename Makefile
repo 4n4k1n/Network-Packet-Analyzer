@@ -1,4 +1,5 @@
 all:
+	mkdir -p logs
 	go build -o analyzer src/*.go
 
 run:

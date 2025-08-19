@@ -1,6 +1,8 @@
 package main
 
-import "github.com/google/gopacket/layers"
+import (
+	"github.com/google/gopacket/layers"
+)
 
 type ByteSize int64
 

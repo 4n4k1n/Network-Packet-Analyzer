@@ -46,6 +46,7 @@ func printHeaderLine() {
 }
 
 // print the packet data
-func printPacketData(data Pack_data, size int, stats *Stats_data) {
-	fmt.Printf("%-15s  %-15s  %-8s  %-10d  %-10d  %-10d  %-20s  %-20s\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port, size, reverseDNS(data.src_ip, stats), reverseDNS(data.dst_ip, stats))
+func sprintPacketData(data Pack_data, size int, stats *Stats_data) string {
+	log := fmt.Sprintf("%-15s  %-15s  %-8s  %-10d  %-10d  %-10d  %-20s  %-20s\n", data.src_ip, data.dst_ip, data.protocol, data.src_port, data.dst_port, size, reverseDNS(data.src_ip, stats), reverseDNS(data.dst_ip, stats))
+	return log
 }

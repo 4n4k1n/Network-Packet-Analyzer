@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/google/gopacket"
@@ -27,6 +29,13 @@ func main() {
 	}
 	defer handle.Close()
 
+	file, err := os.OpenFile("logs/packets.log", os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0666)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer file.Close()
+
 	filterInput(parse_data, handle)
 
 	printHeaderLine()
@@ -37,7 +46,9 @@ func main() {
 		stats_data.total_packets++
 		data = getData(pack)
 		stats_data.traffic_size += ByteSize(pack.Metadata().Length)
-		printPacketData(data, pack.Metadata().Length, &stats_data)
+		log := sprintPacketData(data, pack.Metadata().Length, &stats_data)
+		fmt.Printf("%s", log)
+		file.WriteString(log)
 		switch data.protocol {
 		case layers.IPProtocolTCP:
 			stats_data.tcp_packets++
