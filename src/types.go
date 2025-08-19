@@ -43,4 +43,5 @@ type Stats_data struct {
 	src_ip_counts     map[string]int
 	dst_ip_counts     map[string]int
 	traffic_size      ByteSize
+	dns_cache         map[string]string
 }
