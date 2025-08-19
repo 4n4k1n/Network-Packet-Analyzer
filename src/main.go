@@ -35,11 +35,12 @@ func main() {
 		stats_data.total_packets++
 		data = getData(pack)
 		printPacketData(data)
-		if data.protocol == layers.IPProtocolTCP {
+		switch data.protocol {
+		case layers.IPProtocolTCP:
 			stats_data.tcp_packets++
-		} else if data.protocol == layers.IPProtocolUDP {
+		case layers.IPProtocolUDP:
 			stats_data.udp_packets++
-		} else {
+		default:
 			stats_data.other_packets++
 		}
 		stats_data.src_ip_counts[data.src_ip]++
