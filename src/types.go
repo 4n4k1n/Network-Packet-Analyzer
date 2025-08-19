@@ -32,6 +32,7 @@ type Pack_data struct {
 	udp      *layers.UDP
 	src_port uint16
 	dst_port uint16
+	service  string
 }
 
 // struct for the stats data
@@ -46,4 +47,5 @@ type Stats_data struct {
 	dst_ip_counts     map[string]int
 	traffic_size      ByteSize
 	dns_cache         map[string]string
+	service_cache     map[uint16]string
 }
